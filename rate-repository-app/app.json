@@ -28,6 +28,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a69170b2-d94b-4208-95c6-585ee2befda7"
+      }
+    },
+    "owner": "alexallen247"
   }
 }
