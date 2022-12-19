@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 import Constants from "expo-constants";
 import Text from "./Text";
 import theme from "../theme";
@@ -15,9 +15,7 @@ const styles = StyleSheet.create({
 const AppBarTab = ({ path, tab }) => {
   return (
     <Link to={path}>
-    <Pressable>
       <Text style={styles.text}>{tab}</Text>
-    </Pressable>
     </Link>
   );
 };
