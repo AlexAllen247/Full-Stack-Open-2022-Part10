@@ -37,6 +37,43 @@ const validationSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
 });
 
+const SignInForm = ({ onSubmit }) => {
+  return (
+    <View style={styles.container}>
+      <FormikTextInput
+        style={styles.input}
+        name="username"
+        placeholder="Username"
+        testID="username"
+      />
+      <FormikTextInput
+        style={styles.input}
+        name="password"
+        placeholder="Password"
+        secureTextEntry
+        testID="password"
+      />
+      <Pressable testID="signIn" onPress={onSubmit}>
+        <Text style={styles.button} backgroundColor="primary" fontWeight="bold">
+          Sign in
+        </Text>
+      </Pressable>
+    </View>
+  );
+};
+
+export const SignInContainer = ({ onSubmit }) => {
+  return (
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
+      {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
+    </Formik>
+  );
+};
+
 const SignIn = () => {
   const [signIn] = useSignIn();
   const navigate = useNavigate();
@@ -54,38 +91,7 @@ const SignIn = () => {
     setSubmitting(false);
     navigate("/");
   };
-  return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      validationSchema={validationSchema}
-    >
-      {({ handleSubmit }) => (
-        <View style={styles.container}>
-          <FormikTextInput
-            style={styles.input}
-            name="username"
-            placeholder="Username"
-          />
-          <FormikTextInput
-            style={styles.input}
-            name="password"
-            placeholder="Password"
-            secureTextEntry
-          />
-          <Pressable onPress={handleSubmit}>
-            <Text
-              style={styles.button}
-              backgroundColor="primary"
-              fontWeight="bold"
-            >
-              Sign in
-            </Text>
-          </Pressable>
-        </View>
-      )}
-    </Formik>
-  );
+  return <SignInContainer onSubmit={onSubmit} />;
 };
 
 export default SignIn;
