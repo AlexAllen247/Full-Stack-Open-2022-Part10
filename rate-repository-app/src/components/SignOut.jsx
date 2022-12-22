@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-native";
 import { useApolloClient } from "@apollo/client";
 import Text from "./Text";
 import useAuthStorage from "../hooks/useAuthStorage";
+import Constants from "expo-constants";
+import theme from "../theme";
 
 const styles = StyleSheet.create({
   text: {
-    paddingHorizontal: 15,
-    paddingVertical: 20,
+    padding: 20,
+    paddingTop: Constants.statusBarHeight + 20,
+    color: theme.colors.appBarText,
   },
 });
 
@@ -24,14 +27,7 @@ const SignOut = () => {
 
   return (
     <Pressable onPress={signOut}>
-      <Text
-        style={styles.text}
-        color="white"
-        fontSize="subheading"
-        fontWeight="bold"
-      >
-        Sign out
-      </Text>
+      <Text style={styles.text}>Sign out</Text>
     </Pressable>
   );
 };
