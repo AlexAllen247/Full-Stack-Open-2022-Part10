@@ -1,7 +1,9 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import Avatar from "./Avatar";
 import RepoDesc from "./RepoDesc";
 import RepoStat from "./RepoStat";
+import Text from "./Text";
+import { openURL } from "expo-linking";
 
 const styles = StyleSheet.create({
   container: {
@@ -19,9 +21,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "flex-start",
   },
+  button: {
+    marginTop: 15,
+    padding: 15,
+    textAlign: "center",
+    borderWidth: 0,
+    borderRadius: 4,
+    overflow: "hidden",
+    color: "white",
+  },
 });
 
-const RepositoryItem = ({ repository }) => {
+const RepositoryItem = ({ repository, url }) => {
   return (
     <View testID="repositoryItem" style={styles.container}>
       <View style={styles.flexContainerA}>
@@ -34,6 +45,17 @@ const RepositoryItem = ({ repository }) => {
         <RepoStat stat={repository.reviewCount} title="Reviews" />
         <RepoStat stat={repository.ratingAverage} title="Rating" />
       </View>
+      {url && (
+        <Pressable onPress={() => openURL(repository.url)}>
+          <Text
+            style={styles.button}
+            backgroundColor="primary"
+            fontWeight="bold"
+          >
+            Open in GitHub
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 };
