@@ -28,6 +28,9 @@ const styles = StyleSheet.create({
   backgroundColorPrimary: {
     backgroundColor: theme.colors.primary,
   },
+  backgroundColorSecondary: {
+    backgroundColor: theme.colors.secondary,
+  },
 });
 
 const Text = ({
@@ -45,6 +48,7 @@ const Text = ({
     fontSize === "subheading" && styles.fontSizeSubheading,
     fontWeight === "bold" && styles.fontWeightBold,
     backgroundColor === "primary" && styles.backgroundColorPrimary,
+    backgroundColor === "secondary" && styles.backgroundColorSecondary,
     style,
   ];
 

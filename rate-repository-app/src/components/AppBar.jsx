@@ -25,6 +25,7 @@ const AppBar = () => {
         {!loading && data.me ? (
           <>
             <AppBarTab path="/createreview" tab={"Create a review"} />
+            <AppBarTab path="/myreviews" tab={"My reviews"} />
             <SignOut />
           </>
         ) : (
