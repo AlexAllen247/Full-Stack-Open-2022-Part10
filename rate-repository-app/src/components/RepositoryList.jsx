@@ -2,10 +2,12 @@ import { FlatList, View, StyleSheet, Pressable } from "react-native";
 import RepositoryItem from "./RepositoryItem";
 import useRepositories from "../hooks/useRepositories";
 import { useNavigate } from "react-router-native";
-import { useState } from "react";
+import React, { useState } from "react";
 import Text from "./Text";
 import theme from "../theme";
 import { Picker } from "@react-native-picker/picker";
+import { Searchbar } from "react-native-paper";
+import { useDebounce } from "use-debounce";
 
 const styles = StyleSheet.create({
   separator: {
@@ -24,73 +26,95 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 5,
     backgroundColor: "lightgrey",
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  searchBarContainer: {
+    margin: 10,
+    marginBottom: 0,
   },
 });
 
-const ItemSeparator = () => <View style={styles.separator} />;
+export class RepositoryListContainer extends React.Component {
+  renderHeader = () => {
+    const { sortBy, setSortBy, search, setSearch } = this.props;
 
-export const RepositoryListContainer = ({
-  repositories,
-  sortBy,
-  setSortBy,
-}) => {
-  const navigate = useNavigate();
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : [];
-
-  const viewItem = ({ item }) => {
     return (
-      <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
-        <RepositoryItem repository={item} />
-      </Pressable>
-    );
-  };
-
-  const SortComponent = ({ sortBy, setSortBy }) => {
-    return (
-      <View style={styles.sortByContainer}>
-        <View style={{ justifyContent: "center", height: 50 }}>
-          <Text style={styles.sortByText}>Order By</Text>
-        </View>
-        <Picker
-          selectedValue={sortBy}
-          style={styles.sortPicker}
-          onValueChange={(itemValue) => setSortBy(itemValue)}
-        >
-          <Picker.Item label="Latest Repositories" value="latest" />
-          <Picker.Item
-            label="Highest rated Repositories"
-            value="highestRated"
+      <View>
+        <View style={styles.searchBarContainer}>
+          <Searchbar
+            placeholder="Search"
+            onChangeText={(itemValue) => setSearch(itemValue)}
+            value={search}
           />
-          <Picker.Item label="Lowest rated Repositories" value="lowestRated" />
-        </Picker>
+        </View>
+        <View style={styles.sortByContainer}>
+          <View style={{ justifyContent: "center", height: 50 }}>
+            <Text style={styles.sortByText}>Order By</Text>
+          </View>
+          <Picker
+            selectedValue={sortBy}
+            style={styles.sortPicker}
+            onValueChange={(itemValue) => setSortBy(itemValue)}
+          >
+            <Picker.Item label="Latest Repositories" value="latest" />
+            <Picker.Item
+              label="Highest rated Repositories"
+              value="highestRated"
+            />
+            <Picker.Item
+              label="Lowest rated Repositories"
+              value="lowestRated"
+            />
+          </Picker>
+        </View>
       </View>
     );
   };
 
-  return (
-    <FlatList
-      data={repositoryNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={viewItem}
-      keyExtractor={(item) => item.id}
-      ListHeaderComponent={() => (
-        <SortComponent sortBy={sortBy} setSortBy={setSortBy} />
-      )}
-    />
-  );
-};
+  render() {
+    const { repositories, navigate } = this.props;
+    const repositoryNodes = repositories
+      ? repositories.edges.map((edge) => edge.node)
+      : [];
+
+    const ItemSeparator = () => <View style={styles.separator} />;
+
+    const viewItem = ({ item }) => {
+      return (
+        <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
+          <RepositoryItem repository={item} />
+        </Pressable>
+      );
+    };
+
+    return (
+      <FlatList
+        data={repositoryNodes}
+        ItemSeparatorComponent={ItemSeparator}
+        renderItem={viewItem}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={this.renderHeader}
+      />
+    );
+  }
+}
 
 const RepositoryList = () => {
   const [sortBy, setSortBy] = useState("latest");
-  const { repositories } = useRepositories(sortBy);
+  const [search, setSearch] = useState("");
+  const [searchDebounce] = useDebounce(search, 500);
+  const { repositories } = useRepositories(sortBy, searchDebounce);
+  const navigate = useNavigate();
 
   return (
     <RepositoryListContainer
       repositories={repositories}
       sortBy={sortBy}
       setSortBy={setSortBy}
+      search={search}
+      setSearch={setSearch}
+      navigate={navigate}
     />
   );
 };

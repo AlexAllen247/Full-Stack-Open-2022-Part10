@@ -18,8 +18,8 @@ const convertSortBy = (sortBy) => {
   }
 };
 
-const useRepositories = (sortBy) => {
-  const variables = convertSortBy(sortBy);
+const useRepositories = (sortBy, searchKeyword) => {
+  const variables = { ...convertSortBy(sortBy), searchKeyword };
   const [repositories, setRepositories] = useState();
 
   const { loading, error, data, refetch } = useQuery(GET_REPOSITORIES, {
